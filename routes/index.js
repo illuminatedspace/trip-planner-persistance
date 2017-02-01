@@ -20,4 +20,8 @@ router.get('/', function(req, res, next) {
   .catch(next);
 });
 
+router.use('/api/activities', require('./api/activities'));
+router.use('/api/hotels', require('./api/hotels'));
+router.use('/api/restaurants', require('./api/restaurants'));
+
 module.exports = router;

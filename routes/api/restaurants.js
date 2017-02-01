@@ -3,9 +3,10 @@ const Restaurant = require('../../models/restaurant');
 
 router.get('/', (req, res, next) => {
   Restaurant.findAll()
-  .then( (activities) => {
-    res.send(activities);
+  .then( (restaurants) => {
+    res.send(restaurants);
   })
+
 });
 
 module.exports = router;

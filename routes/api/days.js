@@ -10,6 +10,7 @@ router.get('/', (req, res, next) => {
 
 });
 
+
 router.get('/:dayNum', (req, res, next) => {
   Day.findOne({
     where: {
@@ -57,7 +58,12 @@ router.delete('/:dayNum', (req, res, next) => {
     res.send(entryDestroyed);
   })
   .catch(next);
+
+  next();
 });
+
+// get all days and update numbers
+router.get();
 
 router.delete('/:dayNum/:attraction', (req, res, next) => {
 

@@ -42,8 +42,34 @@ var tripModule = (function () {
     // before calling `addDay` or `deleteCurrentDay` that update the frontend (the UI), we need to make sure that it happened successfully on the server
   // ~~~~~~~~~~~~~~~~~~~~~~~
   $(function () {
-    $addButton.on('click', addDay(day));
-    $removeButton.on('click', deleteCurrentDay);
+    $addButton.on('click', function() {
+      var newDayNumber = days.length + 1;
+      $.post(`/api/days/${newDayNumber}`, {
+        number: newDayNumber
+      })
+      .then(function(day) {
+        addDay(day);
+      })
+      .catch(function (error) {
+        console.error(error);
+      })
+    });
+
+    $removeButton.on('click', function() {
+      var currentDayNumber = $('.current-day').text();
+
+      $.ajax({
+        url: `/api/days/${currentDayNumber}`,
+        type: 'DELETE',
+        success: function (day) {
+          deleteCurrentDay(day);
+        },
+        error: function (error) {
+        console.error(error);
+        }
+      });
+
+    });
   });
 
 
@@ -53,24 +79,18 @@ var tripModule = (function () {
   // ~~~~~~~~~~~~~~~~~~~~~~~
   function addDay (dayInfo) {
     if (this && this.blur) this.blur(); // removes focus box from buttons
-      var newDayNumber = days.length + 1;
-      console.log('days array',days);
-      // console.log('newDayNumber',newDayNumber);
-        var newDay = dayModule.create(dayInfo); // dayModule
-      // $.post(`/api/days/${newDayNumber}`, {
-      //   number: newDayNumber
-      // })
-        days.push(newDay);
-        if (days.length === 1) {
-          currentDay = newDay;
-        }
-        switchTo(newDay);
+    var newDay = dayModule.create(dayInfo); // dayModule
+    days.push(newDay);
+    if (days.length === 1) {
+      currentDay = newDay;
+    }
+    switchTo(newDay);
   }
 
   // ~~~~~~~~~~~~~~~~~~~~~~~
     // Do not delete a day until it has already been deleted from the DB
   // ~~~~~~~~~~~~~~~~~~~~~~~
-  function deleteCurrentDay () {
+  function deleteCurrentDay (dayInfo) {
     // prevent deleting last day
     if (days.length < 2 || !currentDay) return;
     // remove from the collection
@@ -97,7 +117,6 @@ var tripModule = (function () {
       $.get('/api/days')
       .then( (days) => {
         days.forEach(function (day) {
-          // var createdDay = dayModule.create(day)
           days.push(day);
           addDay(day);
         })

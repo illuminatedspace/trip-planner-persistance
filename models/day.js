@@ -7,6 +7,12 @@ var Activity =require('./activity');
 
 var Day = db.define('day', {
   number: Sequelize.INTEGER
+}, {
+  hook: {
+    afterDestroy: function(day) {
+
+    }
+  }
 });
 
 Day.hasOne(Hotel);

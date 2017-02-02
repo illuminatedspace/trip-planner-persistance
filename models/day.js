@@ -8,14 +8,22 @@ var Activity =require('./activity');
 var Day = db.define('day', {
   number: Sequelize.INTEGER
 }, {
-  hook: {
-    afterDestroy: function(day) {
-
+  hooks: {
+    afterDestroy: function() {
+      return this.findAll()
+        .then(function(days) {
+          var counter = 1;
+          var promiseArr = days.map(function(day) {
+            day.number = counter++;
+            return day.save();
+          });
+          return Promise.all(promiseArr);
+        })
     }
   }
 });
 
-Day.hasOne(Hotel);
+// Day.hasOne(Hotel);
 Day.belongsToMany(Restaurant, { through: 'day_restaurant' });
 Day.belongsToMany(Activity, { through: 'day_activity' });
 

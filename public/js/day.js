@@ -101,7 +101,11 @@ var dayModule = (function () {
     switch (attraction.type) {
       case 'hotel':
         if (this.hotel) this.hotel.hide();
-        this.hotel = attraction;
+        $.post('/api/days/' + this.number + '/hotel', {hotelId: attraction.id})
+        .then(function() {
+          this.hotel = attraction;
+        })
+        .catch(console.error);
         break;
       case 'restaurant':
         utilsModule.pushUnique(this.restaurants, attraction);

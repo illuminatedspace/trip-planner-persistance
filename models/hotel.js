@@ -2,6 +2,7 @@
 var Sequelize = require('sequelize');
 var db = require('./_db');
 var Place = require('./place');
+var Day = require('./day');
 
 var Hotel = db.define('hotel', {
   name: Sequelize.STRING,
@@ -20,5 +21,7 @@ var Hotel = db.define('hotel', {
     }
   }
 });
+
+Hotel.hasOne(Day);
 
 module.exports = Hotel;

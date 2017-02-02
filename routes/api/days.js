@@ -1,5 +1,6 @@
 const router = require('express').Router();
 var Day = require('../../models/day');
+var Hotel = require('../../models/hotel');
 
 router.get('/', (req, res, next) => {
   Day.findAll()
@@ -36,12 +37,23 @@ router.post('/:dayNum', (req, res, next) => {
 });
 
 router.post('/:dayNum/:attraction', (req, res, next) => {
-  // Day.findOne({
-  //   where: {
-  //     number: req.params.dayNum
-  //   }
-  // })
 
+  Day.findOne({
+    where: {
+      number: req.params.dayNum
+    }
+  })
+  .then(function(day) {
+    return Hotel.findOne({
+      where: {
+        id: req.body.hotelId
+      }
+    })
+    .then(function(hotel) {
+      return hotel.setDay(day);
+    })
+  })
+  .catch(next);
 
 });
 
@@ -54,16 +66,12 @@ router.delete('/:dayNum', (req, res, next) => {
   .then( function(day) {
     return day.destroy();
   })
-  .then(function(entryDestroyed) {
-    res.send(entryDestroyed);
+  .then(function() {
+    res.end();
   })
   .catch(next);
 
-  next();
 });
-
-// get all days and update numbers
-router.get();
 
 router.delete('/:dayNum/:attraction', (req, res, next) => {
 

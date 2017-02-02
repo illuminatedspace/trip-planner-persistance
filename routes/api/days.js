@@ -23,6 +23,7 @@ router.get('/:dayNum', (req, res, next) => {
 });
 
 router.post('/:dayNum', (req, res, next) => {
+  console.log('starting to make a day', req.params.dayNum, req.body);
   Day.create({
     number: req.params.dayNum
   })

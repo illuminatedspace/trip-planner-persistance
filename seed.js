@@ -7,6 +7,8 @@ var Place = require('./models/place');
 var Hotel = require('./models/hotel');
 var Restaurant = require('./models/restaurant');
 var Activity = require('./models/activity');
+var Day = require('./models/day');
+
 
 var data = {
   hotel: [
@@ -66,13 +68,29 @@ db.sync({force: true})
 .then(function () {
   console.log("Dropped old data, now inserting data");
   return Promise.map(Object.keys(data), function (name) {
+    //data is data object
+    //name is either: restaurant, activity, or hotel
     return Promise.map(data[name], function (item) {
+      //item is each index of the name's array
       return db.model(name)
       .create(item, {
         include: [Place]
       });
     });
   });
+})
+.then(function() {
+  return Day.create({
+    number: 1
+  })
+}).then(function() {
+  return Day.create({
+    number: 2
+  })
+}).then(function() {
+  return Day.create({
+    number: 3
+  })
 })
 .then(function () {
   console.log("Finished inserting data");
